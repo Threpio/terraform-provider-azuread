@@ -374,6 +374,13 @@ func userResource() *schema.Resource {
 				Type:        schema.TypeString,
 				Computed:    true,
 			},
+
+			"auto_generate_password": {
+				Description: "Whether to, on the creation of a new user, automatically generate a password for that user. This password is not returned",
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+			},
 		},
 	}
 }
@@ -393,10 +400,20 @@ func userResourceCreate(ctx context.Context, d *schema.ResourceData, meta interf
 	client := meta.(*clients.Client).Users.UsersClient
 	directoryObjectsClient := meta.(*clients.Client).Users.DirectoryObjectsClient
 
+	//Check for autoGenerateFlag
+	autoGeneratePassword := d.Get("auto_generate_password").(bool)
 	password := d.Get("password").(string)
-	if password == "" {
+	if password == "" && !autoGeneratePassword {
 		return tf.ErrorDiagPathF(errors.New("`password` is required when creating a new user"), "password", "Could not create user")
+	} else if autoGeneratePassword {
+		// Not true random but requires a change in the password by the sysadmin before it can be sent to the new user
+		uuidPassword, err := uuid.GenerateUUID()
+		if err != nil {
+			tf.ErrorDiagPathF(errors.New("`auto_generate_password` was set to true but the random password creation failed"), "auto_generate_password", "Could not create user")
+		}
+		password = uuidPassword
 	}
+	//Create Random Password - Not sure it matches with password policies
 
 	upn := d.Get("user_principal_name").(string)
 	mailNickName := d.Get("mail_nickname").(string)

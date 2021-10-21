@@ -30,16 +30,24 @@ resource "azuread_user" "example" {
 The following arguments are supported:
 
 * `account_enabled` - (Optional) Whether or not the account should be enabled.
-* `age_group` - (Optional) The age group of the user. Supported values are `Adult`, `NotAdult` and `Minor`. Omit this property or specify a blank string to unset.
-* `business_phones` - (Optional) A list of telephone numbers for the user. Only one number can be set for this property. Read-only for users synced with Azure AD Connect.
+* `age_group` - (Optional) The age group of the user. Supported values are `Adult`, `NotAdult` and `Minor`. Omit this
+  property or specify a blank string to unset.
+* `auto_generate_password` - (Optional) Whether to, on the creation of a new user, assign a random password to that user
+  that is not returned in the plan. This enables for the user to be created within the state instead of needing to be
+  imported manually.
+* `business_phones` - (Optional) A list of telephone numbers for the user. Only one number can be set for this property.
+  Read-only for users synced with Azure AD Connect.
 * `city` - (Optional) The city in which the user is located.
-* `company_name` - (Optional) The company name which the user is associated. This property can be useful for describing the company that an external user comes from.
-* `consent_provided_for_minor` - (Optional) Whether consent has been obtained for minors. Supported values are `Granted`, `Denied` and `NotRequired`. Omit this property or specify a blank string to unset.
+* `company_name` - (Optional) The company name which the user is associated. This property can be useful for describing
+  the company that an external user comes from.
+* `consent_provided_for_minor` - (Optional) Whether consent has been obtained for minors. Supported values are `Granted`
+  , `Denied` and `NotRequired`. Omit this property or specify a blank string to unset.
 * `cost_center` - (Optional) The cost center associated with the user.
 * `country` - (Optional) The country/region in which the user is located, e.g. `US` or `UK`.
 * `department` - (Optional) The name for the department in which the user works.
 * `disable_password_expiration` - (Optional) Whether the user's password is exempt from expiring. Defaults to `false`.
-* `disable_strong_password` - (Optional) Whether the user is allowed weaker passwords than the default policy to be specified. Defaults to `false`.
+* `disable_strong_password` - (Optional) Whether the user is allowed weaker passwords than the default policy to be
+  specified. Defaults to `false`.
 * `display_name` - (Required) The name to display in the address book for the user.
 * `division` - (Optional) The name of the division in which the user works.
 * `employee_id` - (Optional) The employee identifier assigned to the user by the organisation.
@@ -57,7 +65,10 @@ The following arguments are supported:
 * `other_mails` - (Optional) A list of additional email addresses for the user.
 * `password` - (Optional) The password for the user. The password must satisfy minimum requirements as specified by the password policy. The maximum length is 256 characters. This property is required when creating a new user.
 
--> **Passwords and importing users** Passwords can be changed but not cleared. Removing the `password` property for an existing user resource, or setting the password value to a blank string, will not remove the password. When importing a user, Terraform will not reset the password unless the value is subsequently changed in your configuration.
+-> **Passwords and importing users** Passwords can be changed but not cleared. Removing the `password` property for an
+existing user resource, or setting the password value to a blank string, will not remove the password. When importing a
+user, Terraform will not reset the password unless the value is subsequently changed in your configuration. To create
+users with a random password that will need to be reset then use `auto_generate_password`.
 
 * `postal_code` - (Optional) The postal code for the user's postal address. The postal code is specific to the user's country/region. In the United States of America, this attribute contains the ZIP code.
 * `preferred_language` - (Optional) The user's preferred language, in ISO 639-1 notation.
